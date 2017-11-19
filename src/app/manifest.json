@@ -1,0 +1,20 @@
+{
+  "name": "Play with fshare",
+  "version": "1.0",
+  "background": {
+    "scripts": [ "jquery.min.js", "background.js" ],
+    "persistent": true
+  },
+  "browser_action": {
+    "default_icon": {
+      "18": "158131-200.png",
+      "19": "158131-201.png"
+    }
+  },
+  "icons": {
+    "48": "158131-200.png",
+    "128": "158131-200.png"
+  },
+  "permissions": ["nativeMessaging", "*://*.fshare.vn/*", "http://localhost:*/*", "contextMenus", "webRequest", "webRequestBlocking"],
+  "manifest_version": 2
+}

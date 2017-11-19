@@ -1,0 +1,40 @@
+{
+  "name": "go-exe",
+  "version": "1.0.0",
+  "description": "Run media player",
+  "main": "index.js",
+  "scripts": {
+    "build": "bnr win",
+    "build:linux": "bnr linux",
+    "build:mac": "bnr mac"
+  },
+  "betterScripts": {
+    "win": "go build -ldflags \"-s -w\" -o ./dist/go-exe-win32.exe",
+    "mac": {
+      "command": "go build -ldflags \"-s -w\" -o ./dist/go-exe-mac",
+      "env": {
+        "GOOS": "darwin",
+        "GOARCH": "amd64"
+      }
+    },
+    "linux": {
+      "command": "go build -ldflags \"-s -w\" -o ./dist/go-exe-linux",
+      "env": {
+        "GOOS": "linux",
+        "GOARCH": "amd64"
+      }
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@bitv:ninhphamitv/go-ext.git"
+  },
+  "keywords": [
+    "ReeganExE"
+  ],
+  "author": "ReeganExE",
+  "license": "ISC",
+  "devDependencies": {
+    "better-npm-run": "^0.1.0"
+  }
+}
