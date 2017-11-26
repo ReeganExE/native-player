@@ -16,12 +16,12 @@ function doBuild(dist) {
   const args = ['build', '-ldflags', '"-s -w"', '-o', dist];
   const buildProc = spawn('go', args, { cwd: path.resolve('./src/native'), shell: true });
   buildProc.stdout.on('data', (data) => {
-    console.log(`stdout: ${data}`);
+    console.log(`[Build]: ${data}`);
   });
   buildProc.stderr.on('data', (data) => {
-    console.log(`stderr: ${data}`);
+    console.error(`[Build-ERROR]: ${data}`);
   });
   buildProc.on('close', (code) => {
-    console.log(`child process exited with code ${code}`);
+    console.log(`Build process exited with code ${code}`);
   });
 }

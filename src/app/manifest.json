@@ -1,6 +1,6 @@
 {
   "name": "Play with fshare",
-  "version": "1.0",
+  "version": "1.1",
   "background": {
     "scripts": [ "jquery.min.js", "background.js" ],
     "persistent": true
