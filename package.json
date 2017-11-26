@@ -1,5 +1,5 @@
 {
-  "name": "go-exe",
+  "name": "nplayer-module",
   "version": "1.0.0",
   "description": "Run media player",
   "main": "index.js",
@@ -9,16 +9,16 @@
     "build:mac": "bnr mac"
   },
   "betterScripts": {
-    "win": "go build -ldflags \"-s -w\" -o ./dist/go-exe-win32.exe",
+    "win": "node build.js",
     "mac": {
-      "command": "go build -ldflags \"-s -w\" -o ./dist/go-exe-mac",
+      "command": "node build.js",
       "env": {
         "GOOS": "darwin",
         "GOARCH": "amd64"
       }
     },
     "linux": {
-      "command": "go build -ldflags \"-s -w\" -o ./dist/go-exe-linux",
+      "command": "node build.js",
       "env": {
         "GOOS": "linux",
         "GOARCH": "amd64"

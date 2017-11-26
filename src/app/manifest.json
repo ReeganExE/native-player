@@ -15,6 +15,6 @@
     "48": "158131-200.png",
     "128": "158131-200.png"
   },
-  "permissions": ["nativeMessaging", "*://*.fshare.vn/*", "http://localhost:*/*", "contextMenus", "webRequest", "webRequestBlocking"],
+  "permissions": ["nativeMessaging", "*://*.fshare.vn/*", "contextMenus", "webRequest", "webRequestBlocking"],
   "manifest_version": 2
 }
