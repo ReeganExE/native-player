@@ -3,10 +3,6 @@ let TOKEN = '';
 const NOT_FOUND = {status: 404, statusText: 'Not found'};
 const CANCEL = {cancel: true};
 
-$.extend({got: function got() {
-  return Promise.resolve(this.get.apply(null, arguments));
-}});
-
 chrome.contextMenus.create({
   title: 'Play',
   contexts: ['link'],
@@ -60,7 +56,7 @@ function makeRequest(id, tried = false) {
     })
     .catch(e => {
       console.log(e);
-      if (e.status === 400 && e.getResponseHeader('server') === 'fshare-nginx' && !tried) { // Bad request -> maybe token
+      if (e.status === 400 && !tried) { // Bad request -> maybe token
         // try again
         refreshToken().then(() => makeRequest(id, true));
         return;
@@ -73,7 +69,8 @@ function makeRequest(id, tried = false) {
 }
 
 function refreshToken() {
-  return $.got('https://www.fshare.vn/folder/Y915D46AM1XD')
+  return fetch('https://www.fshare.vn/folder/Y915D46AM1XD', {credentials: 'include'})
+    .then(res => res.text())
     .then(doc => (TOKEN = doc.match(/data-token="([^"]+)"/)[1]));
 }
 
@@ -95,17 +92,22 @@ function getStorageFile(items) {
     token: TOKEN
   };
 
-  return Promise.resolve($.ajax({
-    dataType: 'json',
-    type: 'POST',
-    contentType: 'application/json',
-    url: 'https://www.fshare.vn/api/session/downloadsidebyside',
-    data: JSON.stringify(postData)
-  })).then(a => a.map(a => a.split('|')[0]));
+  return fetch('https://www.fshare.vn/api/session/downloadsidebyside', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(postData)
+  })
+  .then(res => res.ok ? res :Promise.reject(res))
+  .then(res => res.json())
+  .then(a => a.map(a => a.split('|')[0]));
 }
 
 function sendNative(link) {
   chrome.runtime.sendNativeMessage('org.js.ninh.nplayer', { Link: link }, function(response) {
-    console.log("Received " + response);
+    console.log("Received ", response);
   });
 }

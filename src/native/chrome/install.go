@@ -11,7 +11,7 @@ import (
 var initialJSON = `
 {
 	"allowed_origins": [
-	  "chrome-extension://kciepmbhedijffapmcgbdadcbfjbkpng/",
+	  "chrome-extension://ecdkbemffockohiceegbdcfppphkcbpi/",
 	  "chrome-extension://boickpmdjgkjfmjnekkbaalodkdeheoc/"
 	],
 	"description": "Fshare Player",
