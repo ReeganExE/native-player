@@ -4,6 +4,7 @@
   "description": "Run media player",
   "main": "index.js",
   "scripts": {
+    "start": "bnr win",
     "build": "bnr win",
     "build:linux": "bnr linux",
     "build:mac": "bnr mac"
