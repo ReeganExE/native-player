@@ -33,7 +33,7 @@ let lastRequest = { timeStamp: 0 };
 chrome.webRequest.onBeforeRequest.addListener(function (details) {
   const { url } = details;
 
-  if (!isSupported(url) || DISABLED) {
+  if (DISABLED || !isSupported(url)) {
     return { cancel: false };
   }
 
