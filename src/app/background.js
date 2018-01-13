@@ -1,8 +1,9 @@
 let lastError;
 let TOKEN = '';
+let DISABLED = false;
 const NOT_FOUND = {status: 404, statusText: 'Not found'};
 const CANCEL = {cancel: true};
-const SUPPORTED_MEDIA = /\.(webm|mkv|flv|flv|vob|ogv|ogg|drc|gif|gifv|mng|avi|mov|wmv|yuv|rm|rmvb|asf|amv|mp4|m4p|m4v|mpg|mp2|mpeg|mpe|mpv|mpg|mpeg|m2v|m4v|svi|3gp|3g2|mxf|roq|nsv|flv)$/;
+const SUPPORTED_MEDIA = /\.(webm|mkv|flv|flv|vob|ogv|ogg|drc|gif|gifv|mng|avi|mov|wmv|yuv|rm|rmvb|asf|amv|mp4|m4p|m4v|mpg|mp2|mpeg|mpe|mpv|mpg|mpeg|m2v|m4v|svi|3gp|3g2|mxf|roq|nsv|flv)$/i;
 
 chrome.contextMenus.create({
   title: 'Play',
@@ -21,9 +22,10 @@ chrome.contextMenus.create({
 });
 
 chrome.browserAction.onClicked.addListener(() => {
-  const error = getLastError();
-  error && alert(error);
-  chrome.browserAction.setBadgeText({text: ''});
+  setDisable(!DISABLED);
+  // const error = getLastError();
+  // error && alert(error);
+  // chrome.browserAction.setBadgeText({text: ''});
 });
 
 let lastRequest = { timeStamp: 0 };
@@ -31,7 +33,7 @@ let lastRequest = { timeStamp: 0 };
 chrome.webRequest.onBeforeRequest.addListener(function (details) {
   const { url } = details;
 
-  if (!isSupported(url)) {
+  if (!isSupported(url) || DISABLED) {
     return { cancel: false };
   }
 
@@ -50,6 +52,12 @@ chrome.webRequest.onBeforeRequest.addListener(function (details) {
   },
   ["blocking"]
 );
+
+function setDisable(status) {
+  DISABLED = status;
+  const path = DISABLED ? 'icon-disabled.png' : 'icon.png';
+  chrome.browserAction.setIcon({path});
+}
 
 function isSupported(url) {
   return SUPPORTED_MEDIA.test(url);

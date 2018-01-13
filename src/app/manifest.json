@@ -7,13 +7,13 @@
   },
   "browser_action": {
     "default_icon": {
-      "18": "158131-200.png",
-      "19": "158131-201.png"
+      "18": "icon.png",
+      "19": "icon.png"
     }
   },
   "icons": {
-    "48": "158131-200.png",
-    "128": "158131-200.png"
+    "48": "icon.png",
+    "128": "icon.png"
   },
   "permissions": ["nativeMessaging", "*://*.fshare.vn/*", "contextMenus", "webRequest", "webRequestBlocking"],
   "manifest_version": 2
