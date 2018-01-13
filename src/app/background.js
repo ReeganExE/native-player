@@ -2,6 +2,7 @@ let lastError;
 let TOKEN = '';
 const NOT_FOUND = {status: 404, statusText: 'Not found'};
 const CANCEL = {cancel: true};
+const SUPPORTED_MEDIA = /\.(webm|mkv|flv|flv|vob|ogv|ogg|drc|gif|gifv|mng|avi|mov|wmv|yuv|rm|rmvb|asf|amv|mp4|m4p|m4v|mpg|mp2|mpeg|mpe|mpv|mpg|mpeg|m2v|m4v|svi|3gp|3g2|mxf|roq|nsv|flv)$/;
 
 chrome.contextMenus.create({
   title: 'Play',
@@ -28,15 +29,18 @@ chrome.browserAction.onClicked.addListener(() => {
 let lastRequest = { timeStamp: 0 };
 
 chrome.webRequest.onBeforeRequest.addListener(function (details) {
-  // console.log(details);
+  const { url } = details;
 
-  if (details.url !== lastRequest.url) {
-    sendNative(details.url);
-    // $.get('http://localhost:3000/play?url='+encodeURIComponent(details.url));
-  } else if (details.timeStamp - lastRequest.timeStamp > 10000) {
-    sendNative(details.url);
-    // $.get('http://localhost:3000/play?url='+encodeURIComponent(details.url));
+  if (!isSupported(url)) {
+    return { cancel: false };
   }
+
+  if (url !== lastRequest.urL) {
+    sendNative(url);
+  } else if (timeStamp - lastRequest.timeStamp > 10000) {
+    sendNative(url);
+  }
+
   lastRequest = details;
 
   return CANCEL;
@@ -46,6 +50,10 @@ chrome.webRequest.onBeforeRequest.addListener(function (details) {
   },
   ["blocking"]
 );
+
+function isSupported(url) {
+  return SUPPORTED_MEDIA.test(url);
+}
 
 function makeRequest(id, tried = false) {
   getStorageFile([id])
@@ -81,7 +89,7 @@ function getLastError() {
 }
 
 function progress(yes) {
-  const path = yes ? '158131-201.png' : '158131-200.png';
+  const path = yes ? 'icon-2.png' : 'icon.png';
   chrome.browserAction.setIcon({path});
 }
 
