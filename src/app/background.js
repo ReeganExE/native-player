@@ -64,8 +64,8 @@ function isSupported(url) {
 }
 
 function makeRequest(id, tried = false) {
-  getStorageFile([id])
-    .then(([link]) => {
+  getStorageFile(id)
+    .then(link => {
       if (link) {
         sendNative(link);
       }
@@ -102,28 +102,27 @@ function progress(yes) {
 }
 
 
-function getStorageFile(items) {
-  var postData = {
-    items,
-    token: TOKEN
-  };
-
-  return fetch('https://www.fshare.vn/api/session/downloadsidebyside', {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(postData)
-  })
-  .then(res => res.ok ? res :Promise.reject(res))
-  .then(res => res.json())
-  .then(a => a.map(a => a.split('|')[0]));
+function getStorageFile(id) {
+  return getCookie()
+    .then(cookie => fetch('https://www.fshare.vn/api/v3/files/download?linkcode=' + id, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${cookie}`
+      }
+    }))
+    .then(res => res.ok ? res :Promise.reject(res))
+    .then(res => res.json());
 }
 
 function sendNative(link) {
   chrome.runtime.sendNativeMessage('org.js.ninh.nplayer', { Link: link }, function(response) {
     console.log("Received ", response);
+  });
+}
+
+function getCookie(name) {
+  return new Promise(resolve => {
+    chrome.cookies.get({ name: 'fshare-app', url: 'https://www.fshare.vn/' }, cookie => resolve(cookie.value))
   });
 }
