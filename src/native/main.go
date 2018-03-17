@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 
 	"github.com/Jeffail/gabs"
 
@@ -37,6 +38,9 @@ func main() {
 	// Check and create conf.ini file
 	if !exists(confini) {
 		d1 := []byte("proc=C:\\Program Files\\MPC-HC\\mpc-hc64.exe")
+		if runtime.GOOS == "darwin" {
+			d1 = []byte("proc=/Applications/VLC.app/Contents/MacOS/VLC")
+		}
 		ioutil.WriteFile(confini, d1, 0644)
 	}
 
