@@ -1,0 +1,41 @@
+{
+  "name": "native-player",
+  "version": "1.0.0",
+  "description": "Run media player",
+  "main": "index.js",
+  "scripts": {
+    "start": "bnr win",
+    "build": "bnr win",
+    "build:linux": "bnr linux",
+    "build:mac": "bnr mac"
+  },
+  "betterScripts": {
+    "win": "node build.js",
+    "mac": {
+      "command": "node build.js",
+      "env": {
+        "GOOS": "darwin",
+        "GOARCH": "amd64"
+      }
+    },
+    "linux": {
+      "command": "node build.js",
+      "env": {
+        "GOOS": "linux",
+        "GOARCH": "amd64"
+      }
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@bitv:ninhphamitv/go-ext.git"
+  },
+  "keywords": [
+    "ReeganExE"
+  ],
+  "author": "ReeganExE",
+  "license": "ISC",
+  "devDependencies": {
+    "better-npm-run": "^0.1.0"
+  }
+}

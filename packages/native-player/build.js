@@ -14,7 +14,7 @@ function determinateOutput() {
 
 function doBuild(dist) {
   const args = ['build', '-ldflags', '"-s -w"', '-o', dist];
-  const buildProc = spawn('go', args, { cwd: path.resolve('./src/native'), shell: true });
+  const buildProc = spawn('go', args, { cwd: path.resolve('./src'), shell: true });
   buildProc.stdout.on('data', (data) => {
     console.log(`[Build]: ${data}`);
   });

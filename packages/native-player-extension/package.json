@@ -1,0 +1,15 @@
+{
+  "name": "native-player-extension",
+  "version": "1.0.0",
+  "description": "Run media player",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@bitv:ninhphamitv/go-ext.git"
+  },
+  "keywords": [
+    "ReeganExE"
+  ],
+  "author": "ReeganExE",
+  "license": "ISC"
+}

@@ -1,41 +1,18 @@
 {
-  "name": "nplayer-module",
+  "name": "native-player",
   "version": "1.0.0",
-  "description": "Run media player",
-  "main": "index.js",
-  "scripts": {
-    "start": "bnr win",
-    "build": "bnr win",
-    "build:linux": "bnr linux",
-    "build:mac": "bnr mac"
-  },
-  "betterScripts": {
-    "win": "node build.js",
-    "mac": {
-      "command": "node build.js",
-      "env": {
-        "GOOS": "darwin",
-        "GOARCH": "amd64"
-      }
-    },
-    "linux": {
-      "command": "node build.js",
-      "env": {
-        "GOOS": "linux",
-        "GOARCH": "amd64"
-      }
-    }
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@bitv:ninhphamitv/go-ext.git"
-  },
-  "keywords": [
-    "ReeganExE"
+  "private": true,
+  "workspaces": [
+    "packages/*"
   ],
-  "author": "ReeganExE",
-  "license": "ISC",
+  "scripts": {
+    "status": "oao status",
+    "bootstrap": "oao bootstrap",
+    "prepareRelease": "oao prepublish",
+    "release": "oao publish"
+  },
+  "license": "MIT",
   "devDependencies": {
-    "better-npm-run": "^0.1.0"
+    "oao": "^1.5.1"
   }
 }
