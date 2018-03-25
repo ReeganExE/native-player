@@ -11,6 +11,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strconv"
 
 	"github.com/Jeffail/gabs"
 
@@ -37,9 +38,9 @@ func main() {
 
 	// Check and create conf.ini file
 	if !exists(confini) {
-		d1 := []byte("proc=C:\\Program Files\\MPC-HC\\mpc-hc64.exe")
+		d1 := []byte("proc=C:\\Program Files\\MPC-HC\\mpc-hc64.exe") // defaults for Windows
 		if runtime.GOOS == "darwin" {
-			d1 = []byte("proc=/Applications/VLC.app/Contents/MacOS/VLC")
+			d1 = []byte("proc=/Applications/VLC.app/Contents/MacOS/VLC") // VLC for macOS
 		}
 		ioutil.WriteFile(confini, d1, 0644)
 	}
@@ -57,8 +58,11 @@ func main() {
 
 	res.Set(proc, "proccess")
 
-	cmd := exec.Command(proc, string(url))
+	url, _ = strconv.Unquote(url) // VLC macOS doesn't understand double quotes
+	cmd := exec.Command(proc, url)
+
 	err = cmd.Start()
+
 	if err != nil {
 		panic("Cannot start: " + err.Error())
 	}
