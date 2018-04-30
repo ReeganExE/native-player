@@ -2,6 +2,9 @@
   "name": "native-player-extension",
   "version": "1.0.0",
   "description": "Run media player",
+  "scripts": {
+    "build": "cross-env NODE_ENV=production webpack"
+  },
   "main": "index.js",
   "repository": {
     "type": "git",
@@ -11,5 +14,13 @@
     "ReeganExE"
   ],
   "author": "ReeganExE",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "lodash.debounce": "^4.0.8"
+  },
+  "devDependencies": {
+    "cross-env": "^5.1.4",
+    "webpack": "^4.6.0",
+    "webpack-cli": "^2.0.15"
+  }
 }

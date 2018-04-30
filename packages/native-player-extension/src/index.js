@@ -1,3 +1,5 @@
+import debounce from 'lodash.debounce';
+
 let lastError;
 let TOKEN = '';
 let DISABLED = false;
@@ -30,6 +32,8 @@ chrome.browserAction.onClicked.addListener(() => {
 
 let lastRequest = { timeStamp: 0 };
 
+const debouncedSendNative = debounce(sendNative, 10000);
+
 chrome.webRequest.onBeforeRequest.addListener(function (details) {
   const { url } = details;
 
@@ -38,9 +42,7 @@ chrome.webRequest.onBeforeRequest.addListener(function (details) {
   }
 
   if (url !== lastRequest.urL) {
-    sendNative(url);
-  } else if (timeStamp - lastRequest.timeStamp > 10000) {
-    sendNative(url);
+    debouncedSendNative(url);
   }
 
   lastRequest = details;
