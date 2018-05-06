@@ -32,7 +32,7 @@ chrome.browserAction.onClicked.addListener(() => {
 
 let lastRequest = { timeStamp: 0 };
 
-const debouncedSendNative = debounce(sendNative, 10000);
+const debouncedSendNative = debounce(sendNative, 10000, { leading: true });
 
 chrome.webRequest.onBeforeRequest.addListener(function (details) {
   const { url } = details;
@@ -42,10 +42,10 @@ chrome.webRequest.onBeforeRequest.addListener(function (details) {
   }
 
   if (url !== lastRequest.urL) {
+    lastRequest = details;
     debouncedSendNative(url);
+    return redirect(url);
   }
-
-  lastRequest = details;
 
   return CANCEL;
 },
@@ -54,6 +54,10 @@ chrome.webRequest.onBeforeRequest.addListener(function (details) {
   },
   ["blocking"]
 );
+
+function redirect(url) {
+  return { redirectUrl: `${chrome.runtime.getURL('redirect.html')}?url=${url}`}
+}
 
 function setDisable(status) {
   DISABLED = status;
