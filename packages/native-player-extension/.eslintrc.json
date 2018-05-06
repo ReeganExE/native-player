@@ -1,0 +1,21 @@
+{
+  "extends": "airbnb-base",
+  "globals": {
+    "chrome": true
+  },
+  "env": {
+    "browser": true
+  },
+  "rules": {
+      "arrow-parens":"off",
+      "linebreak-style":"off",
+      "no-confusing-arrow":"off",
+      "import/newline-after-import":"off",
+      "no-use-before-define": ["error", { "functions": false, "classes": false }],
+      "comma-dangle": "off",
+      "no-console": "off",
+      "function-paren-newline": "off",
+      "max-len": ["error", { "code": 160 }],
+      "prefer-template":"off"
+  }
+}
