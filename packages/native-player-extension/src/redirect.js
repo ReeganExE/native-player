@@ -1,9 +1,8 @@
-import qs from 'query-string';
+import { parse } from 'query-string';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const { url } = qs.parse(location.search);
-  document.getElementById('code').textContent = url;
-  document.getElementById('link').href = url;
+  const { url } = parse(window.location.search);
+  Object.assign(document.getElementById('link'), { href: url, textContent: url });
   document.getElementById('close').addEventListener('click', () => {
     window.close();
   });
