@@ -1,8 +1,9 @@
-let lastError;
-let TOKEN = '';
+import debounce from 'lodash.debounce';
+
 let DISABLED = false;
-const NOT_FOUND = {status: 404, statusText: 'Not found'};
-const CANCEL = {cancel: true};
+const CANCEL = { cancel: true };
+
+// eslint-disable-next-line max-len
 const SUPPORTED_MEDIA = /\.(webm|mkv|flv|flv|vob|ogv|ogg|drc|gif|gifv|mng|avi|mov|wmv|yuv|rm|rmvb|asf|amv|mp4|m4p|m4v|mpg|mp2|mpeg|mpe|mpv|mpg|mpeg|m2v|m4v|svi|3gp|3g2|mxf|roq|nsv|flv)$/i;
 
 chrome.contextMenus.create({
@@ -11,7 +12,7 @@ chrome.contextMenus.create({
   // documentUrlPatterns: [''],
   targetUrlPatterns: ['*://www.fshare.vn/file/*'],
   onclick: function onClick(info) {
-    chrome.browserAction.setBadgeText({text: ''});
+    chrome.browserAction.setBadgeText({ text: '' });
     progress(true);
 
     let [, id] = info.linkUrl.split('fshare.vn/file/');
@@ -23,14 +24,13 @@ chrome.contextMenus.create({
 
 chrome.browserAction.onClicked.addListener(() => {
   setDisable(!DISABLED);
-  // const error = getLastError();
-  // error && alert(error);
-  // chrome.browserAction.setBadgeText({text: ''});
 });
 
 let lastRequest = { timeStamp: 0 };
 
-chrome.webRequest.onBeforeRequest.addListener(function (details) {
+const debouncedSendNative = debounce(sendNative, 10000, { leading: true });
+
+chrome.webRequest.onBeforeRequest.addListener(details => {
   const { url } = details;
 
   if (DISABLED || !isSupported(url)) {
@@ -38,32 +38,34 @@ chrome.webRequest.onBeforeRequest.addListener(function (details) {
   }
 
   if (url !== lastRequest.urL) {
-    sendNative(url);
-  } else if (timeStamp - lastRequest.timeStamp > 10000) {
-    sendNative(url);
+    lastRequest = details;
+    debouncedSendNative(url);
+    return redirect(url);
   }
-
-  lastRequest = details;
 
   return CANCEL;
 },
-  {
-    urls: ["http://*.fshare.vn/*"]
-  },
-  ["blocking"]
+{
+  urls: ['http://*.fshare.vn/*']
+},
+['blocking']
 );
+
+function redirect(url) {
+  return { redirectUrl: `${chrome.runtime.getURL('redirect.html')}?url=${url}` };
+}
 
 function setDisable(status) {
   DISABLED = status;
   const path = DISABLED ? 'icon-disabled.png' : 'icon.png';
-  chrome.browserAction.setIcon({path});
+  chrome.browserAction.setIcon({ path });
 }
 
 function isSupported(url) {
   return SUPPORTED_MEDIA.test(url);
 }
 
-function makeRequest(id, tried = false) {
+function makeRequest(id) {
   getStorageFile(id)
     .then(link => {
       if (link) {
@@ -72,33 +74,14 @@ function makeRequest(id, tried = false) {
     })
     .catch(e => {
       console.log(e);
-      if (e.status === 400 && !tried) { // Bad request -> maybe token
-        // try again
-        refreshToken().then(() => makeRequest(id, true));
-        return;
-      }
-
-      lastError = e.statusText;
-      chrome.browserAction.setBadgeText({text: '' + e.status})
+      chrome.browserAction.setBadgeText({ text: '' + e.status });
     })
     .then(() => progress(false));
 }
 
-function refreshToken() {
-  return fetch('https://www.fshare.vn/folder/Y915D46AM1XD', {credentials: 'include'})
-    .then(res => res.text())
-    .then(doc => (TOKEN = doc.match(/data-token="([^"]+)"/)[1]));
-}
-
-function getLastError() {
-  const error = lastError;
-  lastError = '';
-  return error;
-}
-
 function progress(yes) {
   const path = yes ? 'icon-2.png' : 'icon.png';
-  chrome.browserAction.setIcon({path});
+  chrome.browserAction.setIcon({ path });
 }
 
 
@@ -111,18 +94,18 @@ function getStorageFile(id) {
         Authorization: `Bearer ${cookie}`
       }
     }))
-    .then(res => res.ok ? res :Promise.reject(res))
+    .then(res => res.ok ? res : Promise.reject(res))
     .then(res => res.json());
 }
 
 function sendNative(link) {
-  chrome.runtime.sendNativeMessage('org.js.ninh.nplayer', { Link: link }, function(response) {
-    console.log("Received ", response);
+  chrome.runtime.sendNativeMessage('org.js.ninh.nplayer', { Link: link }, response => {
+    console.log('Received ', response);
   });
 }
 
-function getCookie(name) {
+function getCookie() {
   return new Promise(resolve => {
-    chrome.cookies.get({ name: 'fshare-app', url: 'https://www.fshare.vn/' }, cookie => resolve(cookie.value))
+    chrome.cookies.get({ name: 'fshare-app', url: 'https://www.fshare.vn/' }, cookie => resolve(cookie.value));
   });
 }
