@@ -52,7 +52,7 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
 );
 
 function redirect(url) {
-  return { redirectUrl: `${chrome.runtime.getURL('redirect.html')}?url=${url}` };
+  return { redirectUrl: `${chrome.runtime.getURL('redirect.html')}?url=${encodeURIComponent(url)}` };
 }
 
 function setDisable(status) {
