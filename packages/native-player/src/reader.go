@@ -10,19 +10,13 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/binary"
-	"encoding/json"
 	"fmt"
 	"os"
 	"time"
 
-	"github.com/Jeffail/gabs"
 )
 
-type Message struct {
-	Link string
-}
-
-func Read() string {
+func Read() Message {
 	Log("Application Started")
 	return read()
 }
@@ -34,51 +28,28 @@ func Log(msg string) {
 	defer f.Close()
 }
 
-func read() string {
+func read() Message {
 	s := bufio.NewReader(os.Stdin)
 	length := make([]byte, 4)
 	s.Read(length)
 	lengthNum := readMessageLength(length)
 	content := make([]byte, lengthNum)
 	s.Read(content)
-	json, _ := gabs.ParseJSON(content)
-	link := json.Path("Link").String()
-	return link
+
+	message, _ := ParseMessage(content)
+	return message
 }
 
-func echoMessage(msg []byte) {
-	content := decodeMessage(msg)
-	if content == "Hi" {
-		send("Oh hello there!")
-	} else {
-		send(content)
-	}
+func echoMessage(msg * Message) {
+	content, _ := msg.Marshal()
+	send(content)
 }
 
-func send(msg string) {
-	byteMsg := encodeMessage(msg)
-	writeMessageLength(byteMsg)
+func send(content []byte) {
+	writeMessageLength(content)
 	var msgBuf bytes.Buffer
-	msgBuf.Write(byteMsg)
+	msgBuf.Write(content)
 	msgBuf.WriteTo(os.Stdout)
-}
-
-func decodeMessage(msg []byte) string {
-	var aMessage Message
-	json.Unmarshal(msg, &aMessage)
-	return aMessage.Link
-}
-
-func encodeMessage(msg string) []byte {
-	message := Message{
-		Link: msg,
-	}
-	return dataToBytes(message)
-}
-
-func dataToBytes(msg Message) []byte {
-	byteMsg, _ := json.Marshal(msg)
-	return byteMsg
 }
 
 func writeMessageLength(msg []byte) {
