@@ -1,0 +1,4 @@
+{
+  "programPath": "/Applications/VLC.app/Contents/MacOS/VLC",
+  "args": ["--video-on-top", "--no-embedded-video"]
+}
