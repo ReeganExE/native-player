@@ -5,7 +5,6 @@ package main
 import (
 	"bytes"
 	"encoding/binary"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -15,9 +14,9 @@ import (
 
 	"github.com/Jeffail/gabs"
 
-	"./chrome"
+	"io/ioutil"
 
-	"github.com/Unknwon/goconfig"
+	"./chrome"
 )
 
 func main() {
@@ -28,40 +27,42 @@ func main() {
 
 	defer replyWithError()
 
+	var nativeAppConfig NativeConfig
+
 	res := gabs.New()
 	url := Read()
 	Log(url)
 	res.Set(url, "link")
 
 	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
-	confini := filepath.Join(dir, "./conf.ini")
+	configFilePath := filepath.Join(dir, "./conf.json")
 
 	// Check and create conf.ini file
-	if !exists(confini) {
-		d1 := []byte("proc=C:\\Program Files\\MPC-HC\\mpc-hc64.exe") // defaults for Windows
+	if !exists(configFilePath) {
+		// Create default config
+		nativeAppConfig = NativeConfig{ProgramPath: "C:\\Program Files\\MPC-HC\\mpc-hc64.exe"}
 		if runtime.GOOS == "darwin" {
-			d1 = []byte("proc=/Applications/VLC.app/Contents/MacOS/VLC") // VLC for macOS
+			nativeAppConfig = NativeConfig{ProgramPath: "/Applications/VLC.app/Contents/MacOS/VLC"} // VLC for macOS
 		}
-		ioutil.WriteFile(confini, d1, 0644)
+		out, _ := nativeAppConfig.toJson()
+		ioutil.WriteFile(configFilePath, out, 0644)
+	} else {
+		jsonAsBytes, _ := ioutil.ReadFile(configFilePath)
+		nativeAppConfig, _ = LoadConfigFromJson(jsonAsBytes)
 	}
 
-	conf, err := goconfig.LoadConfigFile(confini)
-	if err != nil {
-		panic(err.Error())
+	nativeProgram := nativeAppConfig.ProgramPath
+
+	if nativeProgram == "" {
+		panic("ProgramPath is not defined")
 	}
 
-	proc, _ := conf.GetValue("", "proc")
-
-	if proc == "" {
-		panic("Empty luancher")
-	}
-
-	res.Set(proc, "proccess")
+	res.Set(nativeProgram, "process")
 
 	url, _ = strconv.Unquote(url) // VLC macOS doesn't understand double quotes
-	cmd := exec.Command(proc, url)
+	cmd := exec.Command(nativeProgram, append([]string{url}, nativeAppConfig.Args...)...)
 
-	err = cmd.Start()
+	err := cmd.Start()
 
 	if err != nil {
 		panic("Cannot start: " + err.Error())
