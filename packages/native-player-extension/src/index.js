@@ -31,7 +31,7 @@ let lastRequest = { timeStamp: 0 };
 const debouncedSendNative = debounce(sendNative, 10000, { leading: true });
 
 chrome.webRequest.onBeforeRequest.addListener(details => {
-  const { url } = details;
+  const { url, tabId } = details;
 
   if (DISABLED || !isSupported(url)) {
     return { cancel: false };
@@ -39,7 +39,10 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
 
   if (url !== lastRequest.urL) {
     lastRequest = details;
-    debouncedSendNative(url);
+    debouncedSendNative({ type: 'PLAY', payload: url })
+      .then(res => chrome.tabs.sendMessage(tabId, res))
+      .catch(e => chrome.tabs.sendMessage(tabId, { type: 'ERROR', payload: e.message }));
+
     return redirect(url);
   }
 
@@ -69,7 +72,7 @@ function makeRequest(id) {
   getStorageFile(id)
     .then(link => {
       if (link) {
-        sendNative(link);
+        sendNative({ type: 'PLAY', payload: link });
       }
     })
     .catch(e => {
@@ -98,9 +101,22 @@ function getStorageFile(id) {
     .then(res => res.json());
 }
 
-function sendNative(link) {
-  chrome.runtime.sendNativeMessage('org.js.ninh.nplayer', { Link: link }, response => {
-    console.log('Received ', response);
+function sendNative(action) {
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendNativeMessage('org.js.ninh.nplayer', action, response => {
+      if (chrome.runtime.lastError) {
+        const error = new Error(chrome.runtime.lastError.message);
+
+        setTimeout(() => reject(error), 1000);
+      } else {
+        const { payload = '' } = response;
+        if (payload.startsWith('{')) {
+          response.payload = JSON.parse(payload);
+        }
+
+        resolve(response);
+      }
+    });
   });
 }
 

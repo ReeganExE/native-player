@@ -8,3 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.close();
   });
 });
+
+chrome.runtime.onMessage.addListener(message => {
+  console.log(message);
+
+  if (message.type === 'ERROR') {
+    document.getElementById('message').style.display = 'block';
+  }
+});
