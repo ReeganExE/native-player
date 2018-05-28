@@ -15,6 +15,7 @@ import (
 	"io/ioutil"
 
 	"./chrome"
+	"strings"
 )
 
 func main() {
@@ -33,7 +34,7 @@ func main() {
 		response.Payload = play(url)
 	} else if request.Type == "GET_CONFIG" {
 		json, _ := readConfig().toJson()
-		response.Payload = string(json[:])
+		response.Payload = string(json)
 	}
 
 	response.Type = "OK"
@@ -75,13 +76,24 @@ func play(url string) string {
 
 	buffer.WriteString(". Using program: " + nativeProgram)
 
-	url, _ = strconv.Unquote(url)
-	// VLC macOS doesn't understand double quotes
-	cmd := exec.Command(nativeProgram, append([]string{url}, nativeAppConfig.Args...)...)
+	unquoted, e := strconv.Unquote(url) // VLC macOS doesn't understand double quotes
+
+	if e == nil {
+		url = unquoted
+	}
+
+	args := append([]string{url}, nativeAppConfig.Args...)
+
+	buffer.WriteString(" " + strings.Join(args, " "))
+
+	cmd := exec.Command(nativeProgram, args...)
 	err := cmd.Start()
 	if err != nil {
 		panic("Cannot start: " + err.Error())
 	}
+
+	buffer.WriteString(". Process ID: " + strconv.Itoa(cmd.Process.Pid))
+
 	cmd.Process.Release()
 
 	return buffer.String()
@@ -108,9 +120,6 @@ func replyWithError() {
 }
 
 func respond(json *Message) {
-	//j := json.String()
-	//Log(j)
-	//byteMsg := []byte(j)
 	byteMsg, _ := json.Marshal()
 	binary.Write(os.Stdout, binary.LittleEndian, uint32(len(byteMsg)))
 
