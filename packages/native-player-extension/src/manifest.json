@@ -11,6 +11,10 @@
       "19": "icon.png"
     }
   },
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
+  },
   "icons": {
     "48": "icon.png",
     "128": "icon.png"

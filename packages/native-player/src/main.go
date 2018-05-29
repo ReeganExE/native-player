@@ -35,15 +35,26 @@ func main() {
 	} else if request.Type == "GET_CONFIG" {
 		json, _ := readConfig().toJson()
 		response.Payload = string(json)
+	} else if request.Type == "SET_CONFIG" {
+		r, e := parseConfig([]byte(request.Payload))
+		if e != nil {
+			panic("Failed " + e.Error() + " --> " + request.Payload)
+		} else {
+			writeConfig(&r)
+		}
 	}
 
 	response.Type = "OK"
 	respond(response)
 }
+
+func writeConfig(config *NativeConfig) {
+	config.writeFile(defaultConfigPath())
+}
+
 func readConfig() *NativeConfig {
 	var nativeAppConfig NativeConfig
-	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
-	configFilePath := filepath.Join(dir, "./conf.json")
+	configFilePath := defaultConfigPath()
 	// Check and create conf.ini file
 	if !exists(configFilePath) {
 		// Create default config
@@ -51,14 +62,19 @@ func readConfig() *NativeConfig {
 		if runtime.GOOS == "darwin" {
 			nativeAppConfig = NativeConfig{ProgramPath: "/Applications/VLC.app/Contents/MacOS/VLC"} // VLC for macOS
 		}
-		out, _ := nativeAppConfig.toJson()
-		ioutil.WriteFile(configFilePath, out, 0644)
+		nativeAppConfig.writeFile(configFilePath)
 	} else {
 		jsonAsBytes, _ := ioutil.ReadFile(configFilePath)
-		nativeAppConfig, _ = LoadConfigFromJson(jsonAsBytes)
+		nativeAppConfig, _ = parseConfig(jsonAsBytes)
 	}
 
 	return &nativeAppConfig
+}
+
+func defaultConfigPath() string {
+	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
+	configFilePath := filepath.Join(dir, "./conf.json")
+	return configFilePath
 }
 
 func play(url string) string {

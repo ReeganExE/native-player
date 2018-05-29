@@ -10,7 +10,13 @@
     "build:mac": "bnr mac"
   },
   "betterScripts": {
-    "win": "node build.js",
+    "win": {
+      "command": "node build.js",
+      "env": {
+        "GOOS": "windows",
+        "GOARCH": "amd64"
+      }
+    },
     "mac": {
       "command": "node build.js",
       "env": {

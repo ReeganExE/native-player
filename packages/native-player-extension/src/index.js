@@ -1,4 +1,5 @@
 import debounce from 'lodash.debounce';
+import sendNative from './native';
 
 let DISABLED = false;
 const CANCEL = { cancel: true };
@@ -99,25 +100,6 @@ function getStorageFile(id) {
     }))
     .then(res => res.ok ? res : Promise.reject(res))
     .then(res => res.json());
-}
-
-function sendNative(action) {
-  return new Promise((resolve, reject) => {
-    chrome.runtime.sendNativeMessage('org.js.ninh.nplayer', action, response => {
-      if (chrome.runtime.lastError) {
-        const error = new Error(chrome.runtime.lastError.message);
-
-        setTimeout(() => reject(error), 1000);
-      } else {
-        const { payload = '' } = response;
-        if (payload.startsWith('{')) {
-          response.payload = JSON.parse(payload);
-        }
-
-        resolve(response);
-      }
-    });
-  });
 }
 
 function getCookie() {
