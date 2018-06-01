@@ -15,6 +15,10 @@ func (r *NativeConfig) toJson() ([]byte, error) {
 	return json.MarshalIndent(r, "", "  ")
 }
 
+func (r *HostConfig) toJson() ([]byte, error) {
+	return json.MarshalIndent(r, "", "  ")
+}
+
 func (r *NativeConfig) writeFile(path string) error {
 	out, _ := r.toJson()
 	return ioutil.WriteFile(path, out, 0644)
@@ -23,4 +27,9 @@ func (r *NativeConfig) writeFile(path string) error {
 type NativeConfig struct {
 	ProgramPath string   `json:"programPath"`
 	Args        []string `json:"args"`
+}
+
+type HostConfig struct {
+	*NativeConfig
+	HostPath	string `json:"hostPath"`
 }

@@ -33,7 +33,11 @@ func main() {
 		var url = request.Payload
 		response.Payload = play(url)
 	} else if request.Type == "GET_CONFIG" {
-		json, _ := readConfig().toJson()
+		nativeConfig := readConfig()
+		// Add host path to the response
+		config := HostConfig{ NativeConfig: nativeConfig }
+		config.HostPath, _ = os.Executable()
+		json, _ := config.toJson()
 		response.Payload = string(json)
 	} else if request.Type == "SET_CONFIG" {
 		r, e := parseConfig([]byte(request.Payload))

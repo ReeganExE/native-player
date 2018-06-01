@@ -8,13 +8,13 @@
   <style>
     textarea {
       margin: 0px;
-      width: 282px;
+      width: 362px;
       height: 68px;
       resize: none;
     }
     input[type="text"] {
       display: block;
-      width: 282px;
+      width: 362px;
     }
 
     form > div {
@@ -36,6 +36,10 @@
     body.loading > p, body.error > #message {
       display: block;
     }
+
+    label {
+      display: block;
+    }
   </style>
   <script src="options.js"></script>
 </head>
@@ -51,12 +55,18 @@
     <div>
       <label>
         <span>Additional arguments (new line):</span>
-        <textarea id="args"></textarea>
       </label>
+      <textarea id="args"></textarea>
+    </div>
+    <div>
+      <label class="program">
+        <span>Native host location:</span>
+      </label>
+      <input type="text" id="program" readonly disabled />
     </div>
     <div>
       <button type="submit">Save</button>
-      <label id="info"></label>
+      <span id="info"></span>
     </div>
   </form>
   <div>

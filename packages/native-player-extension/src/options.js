@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     $('#path').value = payload.programPath;
     $('#args').value = args.join('\n');
+    $('#program').value = payload.hostPath || '';
 
     $('form').style.display = 'block';
 
