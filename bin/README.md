@@ -1,3 +1,5 @@
+## Download
+[macOS](https://github.com/ReeganExE/native-player/raw/master/bin/native-player-darwin) | [Windows](https://github.com/ReeganExE/native-player/raw/master/bin/native-player-win32.exe) | [Linux](https://github.com/ReeganExE/native-player/raw/master/bin/native-player-linux)
 
 ## Install
 
