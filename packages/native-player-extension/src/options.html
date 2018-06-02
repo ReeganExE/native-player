@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>FShare Player</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    textarea {
+      margin: 0px;
+      width: 362px;
+      height: 68px;
+      resize: none;
+    }
+    input[type="text"] {
+      display: block;
+      width: 362px;
+    }
+
+    form > div {
+      margin: 0 0 10px;
+    }
+
+    body.loading > form, body.loading > div {
+      display: none;
+    }
+
+    body.error > form {
+      display: none;
+    }
+
+    body > p, body:not(.error) #message {
+      display: none;
+    }
+
+    body.loading > p, body.error > #message {
+      display: block;
+    }
+
+    label {
+      display: block;
+    }
+  </style>
+  <script src="options.js"></script>
+</head>
+<body class="loading">
+  <p>Loading...</p>
+  <form method="POST">
+    <div>
+        <label>
+            <span>Program path:</span>
+        </label>
+        <input id="path" type="text" placeholder="Program path" />
+    </div>
+    <div>
+      <label>
+        <span>Additional arguments (new line):</span>
+      </label>
+      <textarea id="args"></textarea>
+    </div>
+    <div>
+      <label class="program">
+        <span>Native host location:</span>
+      </label>
+      <input type="text" id="program" readonly disabled />
+    </div>
+    <div>
+      <button type="submit">Save</button>
+      <span id="info"></span>
+    </div>
+  </form>
+  <div>
+      <p id="message">
+        Cannot connect to native host.<br/>
+        Follow this <a href="https://github.com/ReeganExE/native-player/tree/master/bin">link</a> to download and install the native host.
+      </p>
+  </div>
+</body>
+</html>

@@ -5,6 +5,7 @@ module.exports = {
   mode: process.env.NODE_ENV,
   entry: {
     background: './src/index.js',
+    options: './src/options.js',
     redirect: './src/redirect.js',
   },
   output: {
@@ -14,6 +15,7 @@ module.exports = {
     new Copy([
       { from: 'src/assets/*', flatten: true },
       'src/manifest.json',
+      'src/options.html',
       'src/redirect.html'
     ])
   ],

@@ -12,11 +12,10 @@ import (
 	"runtime"
 	"strconv"
 
-	"github.com/Jeffail/gabs"
-
 	"io/ioutil"
 
 	"./chrome"
+	"strings"
 )
 
 func main() {
@@ -27,16 +26,39 @@ func main() {
 
 	defer replyWithError()
 
+	var request = Read()
+	var response = new(Message)
+
+	if request.Type == "PLAY" {
+		var url = request.Payload
+		response.Payload = play(url)
+	} else if request.Type == "GET_CONFIG" {
+		nativeConfig := readConfig()
+		// Add host path to the response
+		config := HostConfig{ NativeConfig: nativeConfig }
+		config.HostPath, _ = os.Executable()
+		json, _ := config.toJson()
+		response.Payload = string(json)
+	} else if request.Type == "SET_CONFIG" {
+		r, e := parseConfig([]byte(request.Payload))
+		if e != nil {
+			panic("Failed " + e.Error() + " --> " + request.Payload)
+		} else {
+			writeConfig(&r)
+		}
+	}
+
+	response.Type = "OK"
+	respond(response)
+}
+
+func writeConfig(config *NativeConfig) {
+	config.writeFile(defaultConfigPath())
+}
+
+func readConfig() *NativeConfig {
 	var nativeAppConfig NativeConfig
-
-	res := gabs.New()
-	url := Read()
-	Log(url)
-	res.Set(url, "link")
-
-	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
-	configFilePath := filepath.Join(dir, "./conf.json")
-
+	configFilePath := defaultConfigPath()
 	// Check and create conf.ini file
 	if !exists(configFilePath) {
 		// Create default config
@@ -44,32 +66,57 @@ func main() {
 		if runtime.GOOS == "darwin" {
 			nativeAppConfig = NativeConfig{ProgramPath: "/Applications/VLC.app/Contents/MacOS/VLC"} // VLC for macOS
 		}
-		out, _ := nativeAppConfig.toJson()
-		ioutil.WriteFile(configFilePath, out, 0644)
+		nativeAppConfig.writeFile(configFilePath)
 	} else {
 		jsonAsBytes, _ := ioutil.ReadFile(configFilePath)
-		nativeAppConfig, _ = LoadConfigFromJson(jsonAsBytes)
+		nativeAppConfig, _ = parseConfig(jsonAsBytes)
 	}
 
-	nativeProgram := nativeAppConfig.ProgramPath
+	return &nativeAppConfig
+}
 
+func defaultConfigPath() string {
+	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
+	configFilePath := filepath.Join(dir, "./conf.json")
+	return configFilePath
+}
+
+func play(url string) string {
+	var buffer bytes.Buffer
+
+	var nativeAppConfig = readConfig()
+
+	Log(url)
+
+	buffer.WriteString("URL: " + url)
+	nativeProgram := nativeAppConfig.ProgramPath
 	if nativeProgram == "" {
 		panic("ProgramPath is not defined")
 	}
 
-	res.Set(nativeProgram, "process")
+	buffer.WriteString(". Using program: " + nativeProgram)
 
-	url, _ = strconv.Unquote(url) // VLC macOS doesn't understand double quotes
-	cmd := exec.Command(nativeProgram, append([]string{url}, nativeAppConfig.Args...)...)
+	unquoted, e := strconv.Unquote(url) // VLC macOS doesn't understand double quotes
 
+	if e == nil {
+		url = unquoted
+	}
+
+	args := append([]string{url}, nativeAppConfig.Args...)
+
+	buffer.WriteString(" " + strings.Join(args, " "))
+
+	cmd := exec.Command(nativeProgram, args...)
 	err := cmd.Start()
-
 	if err != nil {
 		panic("Cannot start: " + err.Error())
 	}
 
+	buffer.WriteString(". Process ID: " + strconv.Itoa(cmd.Process.Pid))
+
 	cmd.Process.Release()
-	respond(res)
+
+	return buffer.String()
 }
 
 func install() {
@@ -87,21 +134,15 @@ func dump() {
 func replyWithError() {
 	if r := recover(); r != nil {
 		err := r.(string)
-		res := gabs.New()
-		res.Set(err, "error")
-		respond(res)
+		var res = Message{Payload: err, Type: "ERROR"}
+		respond(&res)
 	}
 }
 
-func respond(json *gabs.Container) {
-	j := json.String()
-	Log(j)
-	str := []byte(j)
-	binary.Write(os.Stdout, binary.LittleEndian, uint32(len(str)))
-	sendBytes(str)
-}
+func respond(json *Message) {
+	byteMsg, _ := json.Marshal()
+	binary.Write(os.Stdout, binary.LittleEndian, uint32(len(byteMsg)))
 
-func sendBytes(byteMsg []byte) {
 	var msgBuf bytes.Buffer
 	msgBuf.Write(byteMsg)
 	msgBuf.WriteTo(os.Stdout)

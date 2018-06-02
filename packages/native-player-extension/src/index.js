@@ -1,4 +1,5 @@
 import debounce from 'lodash.debounce';
+import sendNative from './native';
 
 let DISABLED = false;
 const CANCEL = { cancel: true };
@@ -31,7 +32,7 @@ let lastRequest = { timeStamp: 0 };
 const debouncedSendNative = debounce(sendNative, 10000, { leading: true });
 
 chrome.webRequest.onBeforeRequest.addListener(details => {
-  const { url } = details;
+  const { url, tabId } = details;
 
   if (DISABLED || !isSupported(url)) {
     return { cancel: false };
@@ -39,7 +40,10 @@ chrome.webRequest.onBeforeRequest.addListener(details => {
 
   if (url !== lastRequest.urL) {
     lastRequest = details;
-    debouncedSendNative(url);
+    debouncedSendNative({ type: 'PLAY', payload: url })
+      .then(res => chrome.tabs.sendMessage(tabId, res))
+      .catch(e => chrome.tabs.sendMessage(tabId, { type: 'ERROR', payload: e.message }));
+
     return redirect(url);
   }
 
@@ -69,7 +73,7 @@ function makeRequest(id) {
   getStorageFile(id)
     .then(link => {
       if (link) {
-        sendNative(link);
+        sendNative({ type: 'PLAY', payload: link });
       }
     })
     .catch(e => {
@@ -96,12 +100,6 @@ function getStorageFile(id) {
     }))
     .then(res => res.ok ? res : Promise.reject(res))
     .then(res => res.json());
-}
-
-function sendNative(link) {
-  chrome.runtime.sendNativeMessage('org.js.ninh.nplayer', { Link: link }, response => {
-    console.log('Received ', response);
-  });
 }
 
 function getCookie() {
