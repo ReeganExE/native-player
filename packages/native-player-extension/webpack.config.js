@@ -8,7 +8,7 @@ const DEV = env.NODE_ENV === 'development';
 module.exports = {
   mode: process.env.NODE_ENV,
   entry: {
-    background: './src/index.js',
+    background: './src/background.js',
     options: './src/options.js',
     redirect: './src/redirect.js',
   },
