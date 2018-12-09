@@ -27,21 +27,20 @@ function App() {
     return () => chrome.runtime.onMessage.removeListener(onMessage);
   }, [window.location.search]);
 
-
   return (
     <>
         <h1>Captured link:</h1>
-        <a id="link" href={url}>{label}</a>
+        <a href={url}>{label}</a>
         <p>
-          <a id="link" href={url}>{url}</a>
+          <a href={url}>{url}</a>
         </p>
         <p>
-          <button id="close" onClick={() => window.close() }>Close</button>
+          <button onClick={() => window.close() }>Close</button>
         </p>
         <div>
           {
             installed || (
-              <p id="message">
+              <p>
                 Cannot connect to the native host.<br/>
                 Follow this <a href="https://github.com/ReeganExE/native-player/tree/master/bin">link</a> to download and install the native host.
               </p>
