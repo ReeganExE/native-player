@@ -1,6 +1,10 @@
 const Copy = require('copy-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
+
+const { env } = process;
+const DEV = env.NODE_ENV === 'development';
+
 module.exports = {
   mode: process.env.NODE_ENV,
   entry: {
@@ -10,6 +14,11 @@ module.exports = {
   },
   output: {
     filename: '[name].js'
+  },
+  module: {
+    rules: [
+      { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ }
+    ]
   },
   plugins: [
     new Copy([
@@ -23,18 +32,33 @@ module.exports = {
   optimization: optimization()
 };
 
+
 function optimization() {
-  if (process.env.NODE_ENV !== 'production') {
-    return;
+  const chunks = {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          name: 'vendor',
+          chunks: 'all',
+          minChunks: 2
+        }
+      }
+    }
+    // runtimeChunk: true
+  };
+
+  if (DEV) {
+    return chunks;
   }
 
   return {
+    ...chunks,
     minimize: true,
     minimizer: [
       new UglifyJsPlugin({
         uglifyOptions: {
           ecma: 6,
-          compress: { inline: false },
+          compress: true,
           output: {
             comments: false,
             beautify: false
