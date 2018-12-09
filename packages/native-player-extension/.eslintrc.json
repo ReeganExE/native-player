@@ -1,5 +1,6 @@
 {
-  "extends": "airbnb-base",
+  "extends": "airbnb",
+  "parser": "babel-eslint",
   "globals": {
     "chrome": true
   },
@@ -15,6 +16,7 @@
       "no-use-before-define": ["error", { "functions": false, "classes": false }],
       "comma-dangle": "off",
       "no-console": "off",
+      "react/jsx-filename-extension": "off",
       "function-paren-newline": "off",
       "max-len": ["error", { "code": 160 }],
       "prefer-template":"off"

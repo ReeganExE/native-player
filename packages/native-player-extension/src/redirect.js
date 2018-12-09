@@ -1,5 +1,5 @@
 import { parse } from 'query-string';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { render } from 'react-dom';
 
 function App() {
@@ -16,12 +16,13 @@ function App() {
       }
     };
 
-    const { url } = parse(window.location.search);
+    const { url: original } = parse(window.location.search);
 
-    const label = document.title = decodeURIComponent(url).split('/').pop();
+    const fileName = decodeURIComponent(url).split('/').pop();
+    document.title = fileName;
 
-    setLabel(label);
-    setUrl(url);
+    setLabel(fileName);
+    setUrl(original);
     chrome.runtime.onMessage.addListener(onMessage);
 
     return () => chrome.runtime.onMessage.removeListener(onMessage);
@@ -29,24 +30,27 @@ function App() {
 
   return (
     <>
-        <h1>Captured link:</h1>
-        <a href={url}>{label}</a>
-        <p>
-          <a href={url}>{url}</a>
-        </p>
-        <p>
-          <button onClick={() => window.close() }>Close</button>
-        </p>
-        <div>
-          {
-            installed || (
-              <p>
-                Cannot connect to the native host.<br/>
-                Follow this <a href="https://github.com/ReeganExE/native-player/tree/master/bin">link</a> to download and install the native host.
-              </p>
-            )
-          }
-        </div>
+      <h1>Captured link:</h1>
+      <a href={url}>{label}</a>
+      <p>
+        <a href={url}>{url}</a>
+      </p>
+      <p>
+        <button type="button" onClick={() => window.close()}>Close</button>
+      </p>
+      <div>
+        {
+          installed || (
+            <p>
+              Cannot connect to the native host.
+              <br />
+              Follow this
+              <a href="https://github.com/ReeganExE/native-player/tree/master/bin">link</a>
+              to download and install the native host.
+            </p>
+          )
+        }
+      </div>
     </>
   );
 }
