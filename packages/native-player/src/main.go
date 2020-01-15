@@ -4,7 +4,6 @@ package main
 
 import (
 	"bytes"
-	"encoding/binary"
 	"log"
 	"os"
 	"os/exec"
@@ -15,6 +14,7 @@ import (
 	"io/ioutil"
 
 	"./chrome"
+	"./writer"
 	"strings"
 )
 
@@ -140,10 +140,5 @@ func replyWithError() {
 }
 
 func respond(json *Message) {
-	byteMsg, _ := json.Marshal()
-	binary.Write(os.Stdout, binary.LittleEndian, uint32(len(byteMsg)))
-
-	var msgBuf bytes.Buffer
-	msgBuf.Write(byteMsg)
-	msgBuf.WriteTo(os.Stdout)
+	writer.NewWriter(os.Stdout).WriteJSON(json)
 }
