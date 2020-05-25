@@ -3,7 +3,10 @@
   "description": "Open URL with your favourite media player",
   "version": "1.5.1",
   "background": {
-    "scripts": [ "background.js" ],
+    "scripts": [
+      "vendor.js",
+      "background.js"
+    ],
     "persistent": true
   },
   "browser_action": {
@@ -20,7 +23,14 @@
     "48": "icon.png",
     "128": "icon.png"
   },
-  "permissions": ["nativeMessaging", "*://*.fshare.vn/*", "contextMenus", "webRequest", "webRequestBlocking", "cookies"],
+  "permissions": [
+    "nativeMessaging",
+    "*://*.fshare.vn/*",
+    "contextMenus",
+    "webRequest",
+    "webRequestBlocking",
+    "cookies"
+  ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "manifest_version": 2
 }

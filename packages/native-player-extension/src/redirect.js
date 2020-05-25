@@ -26,12 +26,12 @@ function App() {
     chrome.runtime.onMessage.addListener(onMessage)
 
     return () => chrome.runtime.onMessage.removeListener(onMessage)
-  }, [window.location.search])
+  }, [url])
 
   return (
     <>
       <h1>Captured link:</h1>
-      <a href={url}>{label}</a>
+      Filename: <a href={url}>{label}</a>
       <p>
         <a href={url}>{url}</a>
       </p>

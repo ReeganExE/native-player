@@ -46,9 +46,10 @@ chrome.webRequest.onBeforeRequest.addListener(
         .then((res) => chrome.tabs.sendMessage(tabId, res))
         .catch((e) => chrome.tabs.sendMessage(tabId, { type: 'ERROR', payload: e.message }))
 
-      chrome.tabs.update(tabId, { url })
+      chrome.tabs.update(tabId, {
+        url: getRedirectURL(url)
+      })
       return CANCEL
-      // return redirect(url);
     }
 
     return CANCEL
@@ -59,10 +60,8 @@ chrome.webRequest.onBeforeRequest.addListener(
   ['blocking']
 )
 
-function redirect(url) {
-  return {
-    redirectUrl: `${chrome.runtime.getURL('redirect.html')}?url=${encodeURIComponent(url)}`
-  }
+function getRedirectURL(url) {
+  return `${chrome.runtime.getURL('redirect.html')}?url=${encodeURIComponent(url)}`
 }
 
 function setDisable(status) {
