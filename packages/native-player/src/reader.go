@@ -1,16 +1,17 @@
 package main
 
 import (
-	"./reader"
 	"fmt"
 	"os"
 	"time"
+
+	"./reader"
 )
 
 func Read() Message {
 	Log("Application Started")
 	var m *Message
-	reader.NewReader(os.Stdout).ReadAsJSON(&m)
+	reader.NewReader(os.Stdin).ReadAsJSON(&m)
 	return *m
 }
 

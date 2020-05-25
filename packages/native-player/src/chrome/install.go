@@ -11,6 +11,7 @@ import (
 var initialJSON = `
 {
 	"allowed_origins": [
+	  "chrome-extension://fgdpgoncpegafhmodfnkhaolhgkkhand/",
 	  "chrome-extension://ecdkbemffockohiceegbdcfppphkcbpi/",
 	  "chrome-extension://boickpmdjgkjfmjnekkbaalodkdeheoc/"
 	],

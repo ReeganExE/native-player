@@ -1,30 +1,25 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState, useMemo } from 'react'
 import { render } from 'react-dom'
 import sendNative from './native'
 import useOptions from './useOptions'
 
 function Options() {
-  // const [config, setConfig] = useState({
-  //   args: [],
-  //   hostPath: '',
-  //   programPath: ''
-  // });
-
-  const [config, { setPath }] = useOptions()
+  const [config] = useOptions()
   const [saved, setSaved] = useState('')
 
-  const onSubmit = async (e) => {
+  const onSubmit = useCallback(async (e) => {
     e.preventDefault()
+    const [programPath, args] = Array.from(new FormData(e.target).values())
     const toBeSaved = JSON.stringify({
-      programPath: config.programPath,
-      args: config.args.filter(Boolean)
+      programPath,
+      args: args ? args.split('\n').filter(Boolean) : []
     })
     await sendNative({ type: 'SET_CONFIG', payload: toBeSaved })
 
-    // setPath('' + Date.now());
     setSaved('Saved')
     setTimeout(() => setSaved(''), 2000)
-  }
+  }, [])
+  const args = useMemo(() => config.args && config.args.join('\n'), [config.args])
 
   return (
     <>
@@ -34,8 +29,8 @@ function Options() {
             <span>Program path:</span>
           </label>
           <input
-            value={config.programPath}
-            onChange={(e) => setPath(e.target.value)}
+            defaultValue={config.programPath}
+            name="programPath"
             type="text"
             placeholder="Program path"
           />
@@ -44,7 +39,7 @@ function Options() {
           <label>
             <span>Additional arguments (new line):</span>
           </label>
-          <textarea id="args" />
+          <textarea id="args" name="args" defaultValue={args} />
         </div>
         <div>
           <label className="program">
@@ -72,36 +67,3 @@ function Options() {
 }
 
 render(<Options />, document.querySelector('div'))
-
-// const $ = i => document.querySelector(i);
-
-// document.addEventListener('DOMContentLoaded', async () => {
-//   const info = $('#info');
-//   try {
-//     const res = await sendNative({ type: 'GET_CONFIG' });
-//     const { payload } = res;
-
-//     const args = payload.args || [];
-
-//     $('#path').value = payload.programPath;
-//     $('#args').value = args.join('\n');
-//     $('#program').value = payload.hostPath || '';
-
-//     $('form').style.display = 'block';
-
-//     $('form').addEventListener('submit', async e => {
-//       e.preventDefault();
-//       const config = JSON.stringify({ programPath: $('#path').value, args: $('#args').value.split('\n').filter(Boolean) });
-//       await sendNative({ type: 'SET_CONFIG', payload: config });
-
-//       info.textContent = 'Saved';
-//       setTimeout(() => {
-//         $('#info').textContent = '';
-//       }, 2000);
-//     });
-//   } catch (error) {
-//     document.body.classList.add('error');
-//   }
-
-//   document.body.classList.remove('loading');
-// });

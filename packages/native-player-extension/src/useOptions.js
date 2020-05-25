@@ -16,10 +16,9 @@ const reducer = handleActions(
 export default () => {
   const [state, dispatch] = useReducer(reducer, {})
 
-  useEffect(async () => {
-    const res = await sendNative({ type: 'GET_CONFIG' })
-    dispatch(setConfig(res.payload))
-  }, [window.location.search])
+  useEffect(() => {
+    sendNative({ type: 'GET_CONFIG' }).then((res) => dispatch(setConfig(res.payload)))
+  }, [])
 
   return [
     state,
