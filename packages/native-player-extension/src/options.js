@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { render } from 'react-dom';
-import sendNative from './native';
-import useOptions from './useOptions';
+import React, { useCallback, useEffect, useState } from 'react'
+import { render } from 'react-dom'
+import sendNative from './native'
+import useOptions from './useOptions'
 
 function Options() {
   // const [config, setConfig] = useState({
@@ -10,18 +10,21 @@ function Options() {
   //   programPath: ''
   // });
 
-  const [config, { setPath }] = useOptions();
-  const [saved, setSaved] = useState('');
+  const [config, { setPath }] = useOptions()
+  const [saved, setSaved] = useState('')
 
-  const onSubmit = async e => {
-    e.preventDefault();
-    const toBeSaved = JSON.stringify({ programPath: config.programPath, args: config.args.filter(Boolean) });
-    await sendNative({ type: 'SET_CONFIG', payload: toBeSaved });
+  const onSubmit = async (e) => {
+    e.preventDefault()
+    const toBeSaved = JSON.stringify({
+      programPath: config.programPath,
+      args: config.args.filter(Boolean)
+    })
+    await sendNative({ type: 'SET_CONFIG', payload: toBeSaved })
 
     // setPath('' + Date.now());
-    setSaved('Saved');
-    setTimeout(() => setSaved(''), 2000);
-  };
+    setSaved('Saved')
+    setTimeout(() => setSaved(''), 2000)
+  }
 
   return (
     <>
@@ -30,7 +33,12 @@ function Options() {
           <label htmlFor="path">
             <span>Program path:</span>
           </label>
-          <input value={config.programPath} onChange={e => setPath(e.target.value)} type="text" placeholder="Program path" />
+          <input
+            value={config.programPath}
+            onChange={(e) => setPath(e.target.value)}
+            type="text"
+            placeholder="Program path"
+          />
         </div>
         <div>
           <label>
@@ -51,15 +59,19 @@ function Options() {
       </form>
       <div>
         <p id="message">
-          Cannot connect to native host.<br/>
-          Follow this <a href="https://github.com/ReeganExE/native-player/tree/master/bin">link</a> to download and install the native host.
+          Cannot connect to native host.
+          <br />
+          Follow this <a href="https://github.com/ReeganExE/native-player/tree/master/bin">
+            link
+          </a>{' '}
+          to download and install the native host.
         </p>
       </div>
     </>
-  );
+  )
 }
 
-render(<Options />, document.querySelector('div'));
+render(<Options />, document.querySelector('div'))
 
 // const $ = i => document.querySelector(i);
 

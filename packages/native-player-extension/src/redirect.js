@@ -1,32 +1,32 @@
-import { parse } from 'query-string';
-import React, { useEffect, useState } from 'react';
-import { render } from 'react-dom';
+import { parse } from 'query-string'
+import React, { useEffect, useState } from 'react'
+import { render } from 'react-dom'
 
 function App() {
-  const [installed, setInstalled] = useState(true);
-  const [url, setUrl] = useState('');
-  const [label, setLabel] = useState('');
+  const [installed, setInstalled] = useState(true)
+  const [url, setUrl] = useState('')
+  const [label, setLabel] = useState('')
 
   useEffect(() => {
-    const onMessage = message => {
-      console.log(message);
+    const onMessage = (message) => {
+      console.log(message)
 
       if (message.type === 'ERROR') {
-        setInstalled(false);
+        setInstalled(false)
       }
-    };
+    }
 
-    const { url: original } = parse(window.location.search);
+    const { url: original } = parse(window.location.search)
 
-    const fileName = decodeURIComponent(url).split('/').pop();
-    document.title = fileName;
+    const fileName = decodeURIComponent(url).split('/').pop()
+    document.title = fileName
 
-    setLabel(fileName);
-    setUrl(original);
-    chrome.runtime.onMessage.addListener(onMessage);
+    setLabel(fileName)
+    setUrl(original)
+    chrome.runtime.onMessage.addListener(onMessage)
 
-    return () => chrome.runtime.onMessage.removeListener(onMessage);
-  }, [window.location.search]);
+    return () => chrome.runtime.onMessage.removeListener(onMessage)
+  }, [window.location.search])
 
   return (
     <>
@@ -36,23 +36,23 @@ function App() {
         <a href={url}>{url}</a>
       </p>
       <p>
-        <button type="button" onClick={() => window.close()}>Close</button>
+        <button type="button" onClick={() => window.close()}>
+          Close
+        </button>
       </p>
       <div>
-        {
-          installed || (
-            <p>
-              Cannot connect to the native host.
-              <br />
-              Follow this
-              <a href="https://github.com/ReeganExE/native-player/tree/master/bin">link</a>
-              to download and install the native host.
-            </p>
-          )
-        }
+        {installed || (
+          <p>
+            Cannot connect to the native host.
+            <br />
+            Follow this
+            <a href="https://github.com/ReeganExE/native-player/tree/master/bin">link</a>
+            to download and install the native host.
+          </p>
+        )}
       </div>
     </>
-  );
+  )
 }
 
-render(<App />, document.body.appendChild(document.createElement('div')));
+render(<App />, document.body.appendChild(document.createElement('div')))

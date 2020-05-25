@@ -1,6 +1,6 @@
 {
-  "extends": "airbnb",
   "parser": "babel-eslint",
+  "extends": ["airbnb", "prettier", "prettier/react"],
   "globals": {
     "chrome": true
   },
@@ -8,19 +8,34 @@
     "browser": true
   },
   "rules": {
-      "consistent-return":"off",
-      "arrow-parens":"off",
-      "linebreak-style":"off",
-      "no-confusing-arrow":"off",
-      "import/newline-after-import":"off",
-      "no-use-before-define": ["error", { "functions": false, "classes": false }],
-      "comma-dangle": "off",
-      "jsx-a11y/label-has-associated-control": "off",
-      "no-console": "off",
-      "jsx-a11y/label-has-for": "off",
-      "react/jsx-filename-extension": "off",
-      "function-paren-newline": "off",
-      "max-len": ["error", { "code": 160 }],
-      "prefer-template":"off"
-  }
+    "semi": ["error", "never"],
+    "import/prefer-default-export": "off",
+    "no-plusplus": "off",
+    "implicit-arrow-linebreak": "off",
+    "consistent-return": "off",
+    "no-console": "off",
+    "react/prop-types": "off",
+    "no-use-before-define": [
+      "error",
+      {
+        "functions": false,
+        "classes": false,
+        "variables": false
+      }
+    ],
+    "comma-dangle": ["error", "never"],
+    "react/jsx-filename-extension": [
+      "error",
+      {
+        "extensions": [".js", ".jsx"]
+      }
+    ],
+    "jsx-a11y/label-has-for": "off",
+    "jsx-a11y/label-has-associated-control": "off",
+    "no-shadow": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "error",
+    "prettier/prettier": "error"
+  },
+  "plugins": ["prettier", "react", "react-hooks"]
 }
