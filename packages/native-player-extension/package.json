@@ -16,7 +16,8 @@
     "lodash.debounce": "^4.0.8",
     "query-string": "^6.1.0",
     "react": "^16.7.0-alpha.2",
-    "react-dom": "^16.7.0-alpha.2"
+    "react-dom": "^16.7.0-alpha.2",
+    "redux-actions": "^2.6.4"
   },
   "devDependencies": {
     "@babel/core": "^7.2.0",
@@ -39,12 +40,18 @@
   },
   "babel": {
     "presets": [
-      "@babel/preset-env",
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "chrome": 60
+          }
+        }
+      ],
       "@babel/preset-react"
     ],
     "plugins": [
-      "@babel/plugin-proposal-class-properties",
-      "react-hooks"
+      "@babel/plugin-proposal-class-properties"
     ]
   }
 }

@@ -41,39 +41,10 @@
       display: block;
     }
   </style>
-  <script src="options.js"></script>
 </head>
-<body class="loading">
-  <p>Loading...</p>
-  <form method="POST">
-    <div>
-        <label>
-            <span>Program path:</span>
-        </label>
-        <input id="path" type="text" placeholder="Program path" />
-    </div>
-    <div>
-      <label>
-        <span>Additional arguments (new line):</span>
-      </label>
-      <textarea id="args"></textarea>
-    </div>
-    <div>
-      <label class="program">
-        <span>Native host location:</span>
-      </label>
-      <input type="text" id="program" readonly disabled />
-    </div>
-    <div>
-      <button type="submit">Save</button>
-      <span id="info"></span>
-    </div>
-  </form>
-  <div>
-      <p id="message">
-        Cannot connect to native host.<br/>
-        Follow this <a href="https://github.com/ReeganExE/native-player/tree/master/bin">link</a> to download and install the native host.
-      </p>
-  </div>
+<body>
+  <div>Loading...</div>
+  <script src="vendor.js"></script>
+  <script src="options.js"></script>
 </body>
 </html>
