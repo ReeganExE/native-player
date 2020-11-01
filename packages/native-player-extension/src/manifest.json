@@ -1,7 +1,7 @@
 {
   "name": "Play with fshare",
   "description": "Open URL with your favourite media player",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "background": {
     "scripts": [
       "vendor.js",
@@ -25,7 +25,7 @@
   },
   "permissions": [
     "nativeMessaging",
-    "*://*.fshare.vn/*",
+    "https://*.fshare.vn/*",
     "contextMenus",
     "webRequest",
     "webRequestBlocking",

@@ -55,7 +55,7 @@ chrome.webRequest.onBeforeRequest.addListener(
     return CANCEL
   },
   {
-    urls: ['http://*.fshare.vn/*']
+    urls: ['https://*.fshare.vn/*']
   },
   ['blocking']
 )
