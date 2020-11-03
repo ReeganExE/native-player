@@ -5,7 +5,7 @@ let DISABLED = false
 const CANCEL = { cancel: true }
 
 // eslint-disable-next-line max-len
-const SUPPORTED_MEDIA = /\.(webm|mkv|flv|flv|vob|ogv|ogg|drc|gif|gifv|mng|avi|mov|wmv|yuv|rm|rmvb|asf|amv|mp4|m4p|m4v|mpg|mp2|mpeg|mpe|mpv|mpg|mpeg|m2v|m4v|svi|3gp|3g2|mxf|roq|nsv|flv)$/i
+const SUPPORTED_MEDIA = /\.(webm|mkv|flv|flv|vob|ogv|ogg|drc|mng|avi|mov|wmv|yuv|rm|rmvb|asf|amv|mp4|m4p|m4v|mpg|mp2|mpeg|mpe|mpv|mpg|mpeg|m2v|m4v|svi|3gp|3g2|mxf|roq|nsv|flv)$/i
 
 chrome.contextMenus.create({
   title: 'Play',
