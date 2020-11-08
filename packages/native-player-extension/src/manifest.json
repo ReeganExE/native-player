@@ -1,7 +1,7 @@
 {
   "name": "Play with fshare",
   "description": "Open URL with your favourite media player",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "background": {
     "scripts": [
       "vendor.js",

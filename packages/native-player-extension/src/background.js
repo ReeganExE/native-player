@@ -71,7 +71,7 @@ function setDisable(status) {
 }
 
 function isSupported(url) {
-  return SUPPORTED_MEDIA.test(url)
+  return url.startsWith('https://download') && SUPPORTED_MEDIA.test(url)
 }
 
 function makeRequest(id) {
